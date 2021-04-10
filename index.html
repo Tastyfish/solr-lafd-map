@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en/vox">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+	<title>SAFD Locations Map</title>
+	<link rel="icon" type="image/png" href="images/favicon.png"/>
+	<link href="css/bootstrap.min.css" rel="stylesheet"/>
+	<link href="css/fa.min.css" rel="stylesheet"/>
+	<link href="css/leaflet.css" rel="stylesheet"/>
+	<link href="css/map.css" rel="stylesheet"/>
+</head>
+<body role="document">
+	<nav class="navbar navbar-dark navbar-expand-sm bg-dark fixed-top navbar-fixed-top">
+		<div class="container">
+      <a class="navbar-brand">SAFD Map</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
+			<div class="collapse navbar-collapse" id="navbar">
+				<ul class="navbar-nav me-auto mb-2 mb-sm-0">
+					<li class="nav-item dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Layers <span class="caret"/></a>
+						<ul class="dropdown-menu" role="menu" id="layer-list">
+							<li><a data-layer="world"><i class="fa fa-eye fa-fw fa-pull-left"></i>World</a></li>
+							<li><a data-layer="stats"><i class="fa fa-eye fa-fw fa-pull-left"></i>Stations</a></li>
+							<li><a data-layer="hosps"><i class="fa fa-eye fa-fw fa-pull-left"></i>Hospitals</a></li>
+						</ul>
+					</li>
+					<li id="welcomeBtn" class="active nav-item"><a role="button" data-toggle="collapse" data-target="#welcome">Help</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div id="map"></div>
+
+	<div class="container" role="main">
+		<div class="collapse show" id="welcome" role="dialog">
+			<h1>Hello</h1>
+			<p>
+				Choose layers at top to filter your view.
+			</p>
+			<p><button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#welcome" aria-expanded="true" aria-controls="welcome">OK</button></p>
+		</div>
+	</div>
+
+	<script src="js/bootstrap.bundle.min.js"></script>
+	<script src="js/leaflet.js"></script>
+	<script>
+		// google analytics
+		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+		})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+		ga('create', 'UA-70465958-1', 'auto');
+		ga('send', 'pageview');
+	</script>
+	<script>
+		// general ui
+		function updateHelp() {
+      const btn = document.getElementById('welcomeBtn').classList;
+
+      if(document.getElementById('welcome').classList.contains('in')) {
+        btn.remove('active');
+      } else {
+        btn.add('active');
+      }
+		}
+    {
+		  const welcome = document.getElementById('welcome');
+			welcome.addEventListener('show.bs.collapse', updateHelp);
+		  welcome.addEventListener('hide.bs.collapse', updateHelp);
+    }
+		// Only show welcome screen on first launch
+		if(localStorage.getItem('visited') == 1) {
+			document.getElementById('welcome').classList.remove('show');
+		}
+		localStorage.setItem("visited", 1);
+
+		// initialize map
+		const map = L.map("map", {
+			zoomControl: false,
+			attributionControl: false,
+			minZoom: 2,
+			maxZoom: 6,
+			maxBounds: [[0,0],[-192, 128]],
+			crs: L.CRS.Simple
+		}).setView([-96, 64], 2);
+		L.control.zoom({position: "topleft"}).addTo(map);
+
+    const sIcon = L.icon({
+        iconUrl: 'images/station.png',
+        iconSize: [64, 64],
+        iconAnchor: [32, 62],
+        shadowUrl: 'images/station_s.png',
+        shadowSize: [128, 128],
+        shadowAnchor: [64, 124]
+    });
+
+		const layers = {
+			world: L.tileLayer("tiles/{z}/{x}/{y}.png", {
+					minZoom: 2,
+					maxZoom: 6,
+					tms: true,
+					zIndex: 0,
+          state: true,
+				}).addTo(map),
+      stats: L.layerGroup([
+          L.marker([-67.25, 77.4375], {
+            state: true,
+          }),
+        ]).addTo(map),
+      hosps: L.layerGroup([
+
+        ]).addTo(map),
+		};
+    map.addEventListener('click', event => {
+      console.log(event.latlng);
+    });
+
+	  function setLayer(name, state) {
+			if(layers[name] == null || layers[name].state == state)
+				return false;
+
+      if(state)
+			  layers[name].addTo(map);
+      else
+        layers[name].remove();
+
+      layers[name].options.state = state;
+
+			return true;
+		}
+
+		function getLayer(name) {
+			return layers[name].options.state;
+		}
+
+		function updateHash() {
+			// generate hash
+			var hash = "#l";
+			for(var key in layers) {
+        if(getLayer(key))
+				    hash += "-" + key;
+			}
+
+			// push url state
+			if(hash != window.location.hash) {
+				window.history.pushState(hash, hash, window.location.pathname + hash);
+			}
+		}
+
+		// fn to handle layer toggling
+		function updateMap(layer, btn, state) {
+			if(!setLayer(layer, state))
+				return;
+
+			// update menu icons
+			if(!btn) {
+				btn = document.querySelector("[data-layer="+layer+"]");
+			}
+			if(btn) {
+        const iconClasses = btn.querySelector("i.fa").classList;
+				if(state) {
+					iconClasses.remove("fa-eye-slash");
+          iconClasses.add("fa-eye");
+				} else {
+					iconClasses.remove("fa-eye");
+          iconClasses.add("fa-eye-slash");
+        }
+			}
+		}
+
+		////////////////////
+		// set functionality on maps
+		document.querySelectorAll("#layer-list>li>a").forEach(a =>a.addEventListener("click", function() {
+			// toggle the layer
+			updateMap(this.dataset.layer, this, !getLayer(this.dataset.layer));
+			updateHash();
+		}));
+
+		///////////////
+		// filter as requested
+		function setFilter(hash, cxt) {
+			if(hash != null && hash.length >= 2 && hash.substr(0, 2) == "#l") {
+				var hashSet = hash.substr(2).split("-");
+
+				for(key in layers) {
+					updateMap(key, null, hashSet.some(a => a == key));
+				}
+			} else {
+				for(key in layers) {
+					updateMap(key, null, true);
+        }
+			}
+		}
+		// load from url initially
+		setFilter(window.location.hash, 1);
+		// and also from pops
+		window.addEventListener('popstate', event => setFilter(event.state, 2));
+	</script>
+</body>
+</html>
