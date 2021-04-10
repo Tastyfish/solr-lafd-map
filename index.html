@@ -11,6 +11,7 @@
 	<link href="css/fa.min.css" rel="stylesheet"/>
 	<link href="css/leaflet.css" rel="stylesheet"/>
 	<link href="css/map.css" rel="stylesheet"/>
+  <link href="css/fd.css" rel="stylesheet"/>
 </head>
 <body role="document">
 	<nav class="navbar navbar-dark navbar-expand-sm bg-dark fixed-top navbar-fixed-top">
@@ -49,6 +50,7 @@
 
 	<script src="js/bootstrap.bundle.min.js"></script>
 	<script src="js/leaflet.js"></script>
+  <script src="js/markers.js"></script>
 	<script>
 		// google analytics
 		(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -92,34 +94,50 @@
 		}).setView([-96, 64], 2);
 		L.control.zoom({position: "topleft"}).addTo(map);
 
-    const sIcon = L.icon({
-        iconUrl: 'images/station.png',
-        iconSize: [64, 64],
-        iconAnchor: [32, 62],
-        shadowUrl: 'images/station_s.png',
-        shadowSize: [128, 128],
-        shadowAnchor: [64, 124]
+    const sIcon = L.divIcon({
+      className: 'fas fa-fire-extinguisher fd-icon text-danger fa-3x',
+      iconSize: [64, 64],
+      iconAnchor: [32, 32],
+    });
+    const hIcon = L.divIcon({
+      className: 'fas fa-h-square fd-icon text-primary fa-3x',
+      iconSize: [64, 64],
+      iconAnchor: [32, 32],
     });
 
+    function fMarker(latlong, name, icon, type, postal) {
+      const m = L.marker(latlong, {
+        icon: icon,
+        title: name,
+        state: true,
+      });
+      const popup = m.bindPopup(
+        `<p><b>${name}</b></p><p>${type} at ${postal}</p>`);
+      popup.addEventListener('click', e => popup.closePopup());
+      m.addEventListener('click', e => popup.openPopup());
+      return m;
+    }
+
+    // Load world tile map, as well as markers.
 		const layers = {
 			world: L.tileLayer("tiles/{z}/{x}/{y}.png", {
-					minZoom: 2,
-					maxZoom: 6,
-					tms: true,
-					zIndex: 0,
-          state: true,
-				}).addTo(map),
-      stats: L.layerGroup([
-          L.marker([-67.25, 77.4375], {
-            state: true,
-          }),
-        ]).addTo(map),
-      hosps: L.layerGroup([
-
-        ]).addTo(map),
+				minZoom: 2,
+				maxZoom: 6,
+				tms: true,
+				zIndex: 0,
+        state: true,
+			}).addTo(map),
+      stats: L.layerGroup(
+        markers.stations.map(m => fMarker(m[0], m[1], sIcon, 'Station', m[2]))
+      ).addTo(map),
+      hosps: L.layerGroup(
+        markers.hospitals.map(m => fMarker(m[0], m[1], hIcon, 'Hospital', m[2]))
+      ).addTo(map),
 		};
+
+    // For debugging
     map.addEventListener('click', event => {
-      console.log(event.latlng);
+      console.log([event.latlng.lat, event.latlng.lng]);
     });
 
 	  function setLayer(name, state) {
