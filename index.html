@@ -100,11 +100,15 @@
       iconAnchor: [32, 32],
     });
 
-    function fMarker(latlong, name, icon, type, postal) {
+    var currentMarker = null;
+
+    function fMarker(latlong, name, icon, type, postal, internalCat, internalID) {
       const m = L.marker(latlong, {
         icon: icon,
         title: name,
         state: true,
+        internalCat,
+        internalID
       });
       const popup = m.bindPopup(
         `<p><b>${name}</b></p><p>${type} at ${postal}</p>`);
@@ -123,10 +127,10 @@
         state: true,
 			}).addTo(map),
       stats: L.layerGroup(
-        markers.stations.map(m => fMarker(m[0], m[1], sIcon, 'Station', m[2]))
+        markers.stations.map((m, i) => fMarker(m[0], m[1], sIcon, 'Station', m[2], 'stats', i + 1))
       ).addTo(map),
       hosps: L.layerGroup(
-        markers.hospitals.map(m => fMarker(m[0], m[1], hIcon, 'Hospital', m[2]))
+        markers.hospitals.map((m, i) => fMarker(m[0], m[1], hIcon, 'Hospital', m[2], 'hosps', i + 1))
       ).addTo(map),
 		};
 
@@ -156,10 +160,22 @@
 		function updateHash() {
 			// generate hash
 			var hash = "#l";
+      var allLayers = true;
 			for(var key in layers) {
-        if(getLayer(key))
-				    hash += "-" + key;
+        if(getLayer(key)) {
+				  hash += "-" + key;
+        } else {
+          allLayers = false;
+        }
 			}
+      if(allLayers)
+        hash = "";
+
+      if(currentMarker) {
+        hash += hash.length > 0 ? "+" : "#";
+
+        hash += `m-${currentMarker.options.internalCat}-${currentMarker.options.internalID}`;
+      }
 
 			// push url state
 			if(hash != window.location.hash) {
@@ -188,6 +204,42 @@
 			}
 		}
 
+    // Zoom over to a marker: used in
+    function zoomToMarker(markerHash, btn) {
+
+      // clear old checkbox
+      if(currentMarker) {
+        const oldBtn = document.querySelector(`[data-marker=${currentMarker.options.internalCat}-${currentMarker.options.internalID}]`);
+        if(oldBtn) {
+          const iconClasses = oldBtn.querySelector("i.fas").classList;
+          iconClasses.remove("fa-check-square");
+          iconClasses.add("fa-square");
+        }
+      }
+
+      // Actually move camera
+      {
+        const markerInfo = markerHash.split("-");
+
+        try {
+          const marker = layers[markerInfo[0]].getLayers()[parseInt(markerInfo[1]) - 1];
+          currentMarker = marker;
+          map.setView(marker.getLatLng(), 6);
+        } catch(exc) {
+        }
+      }
+
+      // update menu icons
+			if(!btn) {
+				btn = document.querySelector("[data-marker="+markerHash+"]");
+			}
+			if(btn) {
+        const iconClasses = btn.querySelector("i.fas").classList;
+				iconClasses.remove("fa-square");
+        iconClasses.add("fa-check-square");
+			}
+    }
+
 		////////////////////
 		// set functionality on maps
 		document.querySelectorAll("#layer-list>li>a").forEach(a => a.addEventListener("click", function() {
@@ -199,8 +251,17 @@
 		///////////////
 		// filter as requested
 		function setFilter(hash, cxt) {
-			if(hash != null && hash.length >= 2 && hash.substr(0, 2) == "#l") {
-				var hashSet = hash.substr(2).split("-");
+      const hashes = (hash != null && hash.length >= 1) ? hash.substr(1).split('+') : [];
+
+      function grabHashPart(tag) {
+        return hashes.find(h => h.length >= tag.length && h.substr(0, tag.length) == tag)?.substr(tag.length);
+      }
+
+      const layerHash = grabHashPart('l');
+      const markerHash = grabHashPart('m-');
+
+			if(layerHash) {
+				const hashSet = layerHash.split("-");
 
 				for(key in layers) {
 					updateMap(key, null, hashSet.some(a => a == key));
@@ -210,6 +271,10 @@
 					updateMap(key, null, true);
         }
 			}
+
+      if(markerHash) {
+        zoomToMarker(markerHash);
+      }
 		}
 		// load from url initially
 		setFilter(window.location.hash, 1);
