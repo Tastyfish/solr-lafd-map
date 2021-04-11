@@ -151,14 +151,24 @@
     function buildListMenu(list, root, catName) {
       list.forEach((m, i) => {
         const liEl = document.createElement("li");
-        const aEl = document.createElement("a");
-        aEl.className = "dropdown-item";
-        aEl.dataset.marker = `${catName}-${i + 1}`;
-        const iEl = document.createElement("i");
-        iEl.className = "fas fa-square fa-fw fa-pull-left float-none";
-        aEl.appendChild(iEl);
-        aEl.appendChild(document.createTextNode(m[1]));
-        liEl.appendChild(aEl);
+        {
+          const aEl = document.createElement("a");
+          aEl.className = "dropdown-item";
+          aEl.dataset.marker = `${catName}-${i + 1}`;
+          {
+            const checkEl = document.createElement("i");
+            checkEl.className = "fas fa-square fa-fw fa-pull-left float-none";
+            aEl.appendChild(checkEl);
+          }
+          aEl.appendChild(document.createTextNode(m[1] + " "));
+          {
+            const badgeEl = document.createElement("span");
+            badgeEl.className = "badge bg-secondary";
+            badgeEl.innerText = m[2];
+            aEl.appendChild(badgeEl);
+          }
+          liEl.appendChild(aEl);
+        }
         root.appendChild(liEl);
       });
     }
