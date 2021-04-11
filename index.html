@@ -124,7 +124,7 @@
         `<p><b>${name}</b></p><p>${type} at ${postal}</p>`);
       m.addEventListener('click', e => {
         popup.openPopup();
-        currentMarker = m;
+        zoomToMarker(`${internalCat}-${internalID}`);
         updateHash();
       });
       return m;
