@@ -6,7 +6,7 @@ maxZ = 6
 
 def saveTile(tile, z, x, y):
     makedirs('../tiles/{z}/{x}'.format(x = x, z = z), exist_ok = True)
-    tile.resize((256, 256)).save('../tiles/{z}/{x}/{y}.png'.format(x = x, y = y, z = z), 'png')
+    tile.resize((256, 256), resample=Image.LANCZOS).save('../tiles/{z}/{x}/{y}.png'.format(x = x, y = y, z = z), 'png')
 
 # Save and further break down the given tile, given the current z, x, and y
 def cascadeTile(tile, z, x, y):
