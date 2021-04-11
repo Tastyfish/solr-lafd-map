@@ -68,6 +68,14 @@
 		</div>
 	</div>
 
+  <div class="position-fixed bottom-0 start-50 translate-middle-x p-3" style="z-index: 5">
+    <div id="markerToast" class="toast hide" role="alert" aria-live: "assertive" aria-atomic="true">
+      <div id="markerToastContent" class="toast-body text-center">
+        Station 1 at 200
+      </div>
+    </div>
+  </div>
+
 	<script src="js/bootstrap.bundle.min.js"></script>
 	<script src="js/leaflet.js"></script>
   <script src="js/markers.js"></script>
@@ -111,6 +119,7 @@
     });
 
     var currentMarker = null;
+    const markerToast = new bootstrap.Toast(document.getElementById('markerToast'));
 
     function fMarker(latlong, name, icon, postal, internalCat, internalID) {
       const m = L.marker(latlong, {
@@ -264,6 +273,10 @@
           const marker = layers[markerInfo[0]].getLayers()[parseInt(markerInfo[1]) - 1];
           currentMarker = marker;
           map.setView(marker.getLatLng(), 6);
+
+          // Toast while we have the real marker info
+          document.getElementById('markerToastContent').innerText = `${marker.options.title} @ Postal ${marker.options.postal}`;
+          markerToast.show();
         } catch(exc) {
         }
       }
