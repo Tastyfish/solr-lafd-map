@@ -11,11 +11,11 @@ const markers = {
     [[-144.875, 41.953125], 'Station 9', 311],
   ],
   hospitals: [
-    [[-67.46875, 84.921875], 'Sandy Shores Medical Center', 1029],
     [[-29.53125, 55.640625], 'The Bay Care Center', 3015],
-    [[-127.90625, 63.015625], 'Pillbox Medical', 201],
-    [[-141.140625, 75.203125], 'St. Fiacre Hospital', 179],
-    [[-140.09375, 63.390625], 'Central Los Santos Medical Center', 149],
+    [[-67.46875, 84.921875], 'Sandy Shores Medical Center', 1029],
     [[-124.34375, 52.140625], 'Mount Zonah Medical Center', 507],
+    [[-127.90625, 63.015625], 'Pillbox Medical', 201],
+    [[-140.09375, 63.390625], 'Central Los Santos Medical Center', 149],
+    [[-141.140625, 75.203125], 'St. Fiacre Hospital', 179],
   ]
 }
