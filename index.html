@@ -23,11 +23,11 @@
 			<div class="collapse navbar-collapse" id="navbar">
 				<ul class="navbar-nav me-auto mb-2 mb-sm-0">
 					<li class="nav-item dropdown">
-						<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="navbarDropdown">Layers <span class="caret"/></a>
-						<ul class="dropdown-menu mt-0" role="menu" aria-labelledby="navbarDropdown" id="layer-list">
-							<li><a class="dropdown-item" data-layer="world"><i class="fas fa-eye fa-fw fa-pull-left"></i>World</a></li>
-							<li><a class="dropdown-item" data-layer="stats"><i class="fas fa-eye fa-fw fa-pull-left"></i>Stations</a></li>
-							<li><a class="dropdown-item" data-layer="hosps"><i class="fas fa-eye fa-fw fa-pull-left"></i>Hospitals</a></li>
+						<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="layerDropdown">Layers <span class="caret"/></a>
+						<ul class="dropdown-menu mt-0" role="menu" aria-labelledby="layerDropdown" id="layer-list">
+							<li><a class="dropdown-item" data-layer="world"><i class="fas fa-eye fa-fw fa-pull-left float-none"></i>World</a></li>
+							<li><a class="dropdown-item" data-layer="stats"><i class="fas fa-eye fa-fw fa-pull-left float-none"></i>Stations</a></li>
+							<li><a class="dropdown-item" data-layer="hosps"><i class="fas fa-eye fa-fw fa-pull-left float-none"></i>Hospitals</a></li>
 						</ul>
 					</li>
 					<li id="welcomeBtn" class="nav-item"><a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#welcome">Help</a></li>
@@ -190,7 +190,7 @@
 
 		////////////////////
 		// set functionality on maps
-		document.querySelectorAll("#layer-list>li>a").forEach(a =>a.addEventListener("click", function() {
+		document.querySelectorAll("#layer-list>li>a").forEach(a => a.addEventListener("click", function() {
 			// toggle the layer
 			updateMap(this.dataset.layer, this, !getLayer(this.dataset.layer));
 			updateHash();
