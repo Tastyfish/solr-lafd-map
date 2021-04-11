@@ -30,6 +30,16 @@
 							<li><a class="dropdown-item" data-layer="hosps"><i class="fas fa-eye fa-fw fa-pull-left float-none"></i>Hospitals</a></li>
 						</ul>
 					</li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="stationDropdown">Stations <span class="caret"/></a>
+            <ul class="dropdown-menu mt-0" role="menu" aria-labelledby="stationDropdown" id="stats-list">
+            </ul>
+          </li>
+          <li class="nav-item dropdown">
+            <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="hospitalDropdown">Hospitals <span class="caret"/></a>
+            <ul class="dropdown-menu mt-0" role="menu" aria-labelledby="hospitalDropdown" id="hosps-list">
+            </ul>
+          </li>
 					<li id="welcomeBtn" class="nav-item"><a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#welcome">Help</a></li>
 				</ul>
 			</div>
@@ -136,6 +146,24 @@
         markers.hospitals.map((m, i) => fMarker(m[0], m[1], hIcon, 'Hospital', m[2], 'hosps', i + 1))
       ).addTo(map),
 		};
+
+    // Add stations and hospitals to menu as well
+    function buildListMenu(list, root, catName) {
+      list.forEach((m, i) => {
+        const liEl = document.createElement("li");
+        const aEl = document.createElement("a");
+        aEl.className = "dropdown-item";
+        aEl.dataset.marker = `${catName}-${i + 1}`;
+        const iEl = document.createElement("i");
+        iEl.className = "fas fa-square fa-fw fa-pull-left float-none";
+        aEl.appendChild(iEl);
+        aEl.appendChild(document.createTextNode(m[1]));
+        liEl.appendChild(aEl);
+        root.appendChild(liEl);
+      });
+    }
+    buildListMenu(markers.stations, document.getElementById('stats-list'), 'stats');
+    buildListMenu(markers.hospitals, document.getElementById('hosps-list'), 'hosps');
 
     // For debugging
     map.addEventListener('click', event => {
@@ -248,6 +276,11 @@
 		document.querySelectorAll("#layer-list>li>a").forEach(a => a.addEventListener("click", function() {
 			// toggle the layer
 			updateMap(this.dataset.layer, this, !getLayer(this.dataset.layer));
+			updateHash();
+		}));
+    document.querySelectorAll("#stats-list>li>a,#hosps-list>li>a").forEach(a => a.addEventListener("click", function() {
+			// toggle the layer
+			zoomToMarker(this.dataset.marker, this);
 			updateHash();
 		}));
 
