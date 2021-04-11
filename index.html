@@ -112,18 +112,16 @@
 
     var currentMarker = null;
 
-    function fMarker(latlong, name, icon, type, postal, internalCat, internalID) {
+    function fMarker(latlong, name, icon, postal, internalCat, internalID) {
       const m = L.marker(latlong, {
         icon: icon,
         title: name,
         state: true,
+        postal,
         internalCat,
         internalID
       });
-      const popup = m.bindPopup(
-        `<p><b>${name}</b></p><p>${type} at ${postal}</p>`);
-      m.addEventListener('click', e => {
-        popup.openPopup();
+      m.addEventListener('click', () => {
         zoomToMarker(`${internalCat}-${internalID}`);
         updateHash();
       });
@@ -140,10 +138,10 @@
         state: true,
 			}).addTo(map),
       stats: L.layerGroup(
-        markers.stations.map((m, i) => fMarker(m[0], m[1], sIcon, 'Station', m[2], 'stats', i + 1))
+        markers.stations.map((m, i) => fMarker(m[0], m[1], sIcon, m[2], 'stats', i + 1))
       ).addTo(map),
       hosps: L.layerGroup(
-        markers.hospitals.map((m, i) => fMarker(m[0], m[1], hIcon, 'Hospital', m[2], 'hosps', i + 1))
+        markers.hospitals.map((m, i) => fMarker(m[0], m[1], hIcon, m[2], 'hosps', i + 1))
       ).addTo(map),
 		};
 
