@@ -23,14 +23,14 @@
 			<div class="collapse navbar-collapse" id="navbar">
 				<ul class="navbar-nav me-auto mb-2 mb-sm-0">
 					<li class="nav-item dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Layers <span class="caret"/></a>
-						<ul class="dropdown-menu" role="menu" id="layer-list">
-							<li><a data-layer="world"><i class="fa fa-eye fa-fw fa-pull-left"></i>World</a></li>
-							<li><a data-layer="stats"><i class="fa fa-eye fa-fw fa-pull-left"></i>Stations</a></li>
-							<li><a data-layer="hosps"><i class="fa fa-eye fa-fw fa-pull-left"></i>Hospitals</a></li>
+						<a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="navbarDropdown">Layers <span class="caret"/></a>
+						<ul class="dropdown-menu mt-0" role="menu" aria-labelledby="navbarDropdown" id="layer-list">
+							<li><a class="dropdown-item" data-layer="world"><i class="fas fa-eye fa-fw fa-pull-left"></i>World</a></li>
+							<li><a class="dropdown-item" data-layer="stats"><i class="fas fa-eye fa-fw fa-pull-left"></i>Stations</a></li>
+							<li><a class="dropdown-item" data-layer="hosps"><i class="fas fa-eye fa-fw fa-pull-left"></i>Hospitals</a></li>
 						</ul>
 					</li>
-					<li id="welcomeBtn" class="active nav-item"><a role="button" data-toggle="collapse" data-target="#welcome">Help</a></li>
+					<li id="welcomeBtn" class="nav-item"><a class="nav-link" role="button" data-bs-toggle="modal" data-bs-target="#welcome">Help</a></li>
 				</ul>
 			</div>
 		</div>
@@ -39,12 +39,22 @@
 	<div id="map"></div>
 
 	<div class="container" role="main">
-		<div class="collapse show" id="welcome" role="dialog">
-			<h1>Hello</h1>
-			<p>
-				Choose layers at top to filter your view.
-			</p>
-			<p><button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#welcome" aria-expanded="true" aria-controls="welcome">OK</button></p>
+		<div class="modal fade" id="welcome" role="dialog" tabindex="-1" aria-labelledby="welcomeLabel">
+      <div class="modal-dialog">
+        <div class="modal-content">
+    			<div class="modal-header">
+            <h5 class="modal-title" id="welcomeLabel">Hello.</h5>
+          </div>
+    			<div class="modal-body">
+    				Turn on and off layers by going to <i>Layers</i> above.
+            <br />
+            Pan and zoom like a normal map.
+    			</div>
+    			<div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-lg" data-bs-dismiss="modal">OK</button>
+          </div>
+        </div>
+      </div>
 		</div>
 	</div>
 
@@ -62,24 +72,9 @@
 		ga('send', 'pageview');
 	</script>
 	<script>
-		// general ui
-		function updateHelp() {
-      const btn = document.getElementById('welcomeBtn').classList;
-
-      if(document.getElementById('welcome').classList.contains('in')) {
-        btn.remove('active');
-      } else {
-        btn.add('active');
-      }
-		}
-    {
-		  const welcome = document.getElementById('welcome');
-			welcome.addEventListener('show.bs.collapse', updateHelp);
-		  welcome.addEventListener('hide.bs.collapse', updateHelp);
-    }
 		// Only show welcome screen on first launch
-		if(localStorage.getItem('visited') == 1) {
-			document.getElementById('welcome').classList.remove('show');
+		if(localStorage.getItem('visited') !== '1') {
+			new bootstrap.Modal(document.getElementById('welcome')).show();
 		}
 		localStorage.setItem("visited", 1);
 
@@ -182,7 +177,7 @@
 				btn = document.querySelector("[data-layer="+layer+"]");
 			}
 			if(btn) {
-        const iconClasses = btn.querySelector("i.fa").classList;
+        const iconClasses = btn.querySelector("i.fas").classList;
 				if(state) {
 					iconClasses.remove("fa-eye-slash");
           iconClasses.add("fa-eye");
