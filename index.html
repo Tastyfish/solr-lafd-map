@@ -112,8 +112,11 @@
       });
       const popup = m.bindPopup(
         `<p><b>${name}</b></p><p>${type} at ${postal}</p>`);
-      popup.addEventListener('click', e => popup.closePopup());
-      m.addEventListener('click', e => popup.openPopup());
+      m.addEventListener('click', e => {
+        popup.openPopup();
+        currentMarker = m;
+        updateHash();
+      });
       return m;
     }
 
