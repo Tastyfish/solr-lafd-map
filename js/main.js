@@ -85,7 +85,7 @@ function buildListMenu(list, root, catName) {
       aEl.appendChild(document.createTextNode(m[1] + " "));
       {
         const badgeEl = document.createElement("span");
-        badgeEl.className = "badge bg-secondary";
+        badgeEl.className = "badge rounded-pill bg-secondary";
         badgeEl.innerText = m[3];
         aEl.appendChild(badgeEl);
       }
