@@ -1,4 +1,8 @@
 .fd-icon {
   text-shadow: 0 0 4px black, -2px -2px black, 2px -2px black, -2px 2px black, 2px 2px black;
   text-align: center;
+  filter: drop-shadow(0 0 1px black) drop-shadow(-1px -1px black) drop-shadow(1px -1px black) drop-shadow(-1px 1px black) drop-shadow(1px 1px black);
+}
+.fd-icon svg {
+  z-index: 0 !important;
 }
