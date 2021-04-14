@@ -1,0 +1,42 @@
+body {
+  background: #080;
+}
+
+.legend {
+  display: block;
+  float: left;
+  background: #eaeaea;
+  border: 2px solid #151515;
+  outline: 2px solid #eaeaea;
+  color: #151515;
+  list-style: none;
+  padding: 0.5em;
+  margin: 1em;
+}
+
+.legend li {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 4px;
+}
+
+.legend li:last-child {
+  margin-bottom: 0px;
+}
+
+.legend .badge-container {
+  width: 2.25em;
+}
+
+.badge-container .badge {
+  display: inline;
+  vertical-align: middle;
+}
+
+.dotted {
+  border-bottom: 1px dotted black;
+  flex: 1 1;
+  height: 1em;
+  min-width: 1em;
+  margin: 2px;
+}
