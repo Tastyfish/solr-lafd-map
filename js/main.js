@@ -18,32 +18,25 @@ L.control.zoom({position: "topleft"}).addTo(map);
 var currentMarker = null;
 const markerToast = new bootstrap.Toast(document.getElementById('markerToast'));
 
-function buildIcon(iconClass, badge) {
-  const layerSpan = document.createElement('span');
-  layerSpan.className = 'fa-layers fa-fw';
-  {
-    const iconI = document.createElement('i');
-    iconI.className = `fas ${iconClass[0]}`;
-    layerSpan.appendChild(iconI);
-  }
+function buildIcon(iconName, badge) {
+  const layerContent = document.createElement('div');
+  layerContent.style.background = `url("images/${iconName}.png")`;
   {
     const badgeSpan = document.createElement('span');
-    badgeSpan.className = 'fa-layers-text fa-inverse';
     badgeSpan.innerText = badge;
-    badgeSpan.dataset.faTransform = iconClass[1];
-    layerSpan.appendChild(badgeSpan);
+    layerContent.appendChild(badgeSpan);
   }
   return L.divIcon({
-    html: layerSpan,
-    className: 'fd-icon fa-3x',
-    iconSize: [64, 64],
-    iconAnchor: [32, 32],
+    html: layerContent,
+    className: 'fd-icon',
+    iconSize: [32, 32],
+    iconAnchor: [16, 16],
   })
 }
 
-function fMarker(latlong, name, iconClass, postal, internalCat, internalID) {
+function fMarker(latlong, name, postal, internalCat, internalID) {
   const m = L.marker(latlong, {
-    icon: buildIcon(iconClass, internalID),
+    icon: buildIcon(internalCat, internalID),
     title: name,
     state: true,
     postal,
@@ -67,10 +60,10 @@ const layers = {
     state: true,
   }).addTo(map),
   stats: L.layerGroup(
-    markers.stations.map((m) => fMarker(m[0], m[1], ['fa-fire-extinguisher text-danger', 'shrink-8 down-3 left-1'], m[3], 'stats', m[2]))
+    markers.stations.map((m) => fMarker(m[0], m[1], m[3], 'stats', m[2]))
   ).addTo(map),
   hosps: L.layerGroup(
-    markers.hospitals.map((m) => fMarker(m[0], m[1], ['fa-hospital text-primary', 'shrink-8'], m[3], 'hosps', m[2]))
+    markers.hospitals.map((m) => fMarker(m[0], m[1], m[3], 'hosps', m[2]))
   ).addTo(map),
 };
 

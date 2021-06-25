@@ -1,8 +1,19 @@
 .fd-icon {
-  text-shadow: 0 0 4px black, -2px -2px black, 2px -2px black, -2px 2px black, 2px 2px black;
-  text-align: center;
+  text-shadow: 0 0 4px black, -2px -2px black, 2px -2px black, -2px 2px black, 2px 2px black, 0px 2px black, 0px -2px black, -2px 0px black, 2px 0px black;
   filter: drop-shadow(0 0 1px black) drop-shadow(-1px -1px black) drop-shadow(1px -1px black) drop-shadow(-1px 1px black) drop-shadow(1px 1px black);
+  font: 1.5em/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  color: white;
 }
-.fd-icon svg {
-  z-index: 0 !important;
+.fd-icon > div {
+  width: 100%;
+  height: 100%;
+}
+.fd-icon > div > span {
+  display: inline-block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform-origin: center center;
+  transform: translate(-50%, -50%);
 }
