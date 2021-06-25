@@ -67,16 +67,16 @@ const layers = {
     state: true,
   }).addTo(map),
   stats: L.layerGroup(
-    markers.stations.map((m, i) => fMarker(m[0], m[1], ['fa-fire-extinguisher text-danger', 'shrink-8 down-3 left-1'], m[3], 'stats', m[2]))
+    markers.stations.map((m) => fMarker(m[0], m[1], ['fa-fire-extinguisher text-danger', 'shrink-8 down-3 left-1'], m[3], 'stats', m[2]))
   ).addTo(map),
   hosps: L.layerGroup(
-    markers.hospitals.map((m, i) => fMarker(m[0], m[1], ['fa-hospital text-primary', 'shrink-8'], m[3], 'hosps', m[2]))
+    markers.hospitals.map((m) => fMarker(m[0], m[1], ['fa-hospital text-primary', 'shrink-8'], m[3], 'hosps', m[2]))
   ).addTo(map),
 };
 
 // Add stations and hospitals to menu as well
 function buildListMenu(list, root, catName) {
-  list.forEach((m, i) => {
+  list.forEach((m) => {
     const liEl = document.createElement("li");
     {
       const aEl = document.createElement("a");
@@ -222,7 +222,7 @@ document.querySelectorAll("#stats-list>li>a,#hosps-list>li>a").forEach(a => a.ad
 
 ///////////////
 // filter as requested
-function setFilter(hash, cxt) {
+function setFilter(hash, _cxt) {
   const hashes = (hash != null && hash.length >= 1) ? hash.substr(1).split('+') : [];
 
   function grabHashPart(tag) {
