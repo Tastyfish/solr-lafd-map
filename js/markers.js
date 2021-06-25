@@ -16,9 +16,9 @@ const markers = {
   hospitals: [
     [[-29.53125, 55.640625], 'The Bay Care Center', 'B', 3011],
     [[-67.46875, 84.921875], 'Desert Shores Medical Center', 'D', 1029],
-    [[-124.34375, 52.140625], 'Mount Zonah Medical Center', 'M', 507],
-    [[-127.90625, 63.015625], 'Pillbox Hill Medical Center', 'P', 201],
-    [[-140.09375, 63.390625], 'Central Los Santos Medical Center', 'C', 149],
+    [[-124.34375, 52.140625], 'Cedars-Sinai Medical Center', 'C', 507],
+    [[-127.90625, 63.015625], 'California Hospital Medical Center', 'H', 201],
+    [[-140.09375, 63.390625], 'LAC+USC Medical Center', 'L', 149],
     [[-141.140625, 75.203125], 'St. Fiacre Hospital', 'F', 179],
   ]
 }
